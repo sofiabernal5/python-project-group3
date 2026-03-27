@@ -2,13 +2,16 @@
 
 ## Project Overview
 
-### Group members:
+### Group members
+
 1. Ashley Oliveira Andrade (ARO22B)
 2. Felipe Ubeid (FT23)
 3. Sofia Bernal (SB22I)
 4. Aidan Thompson (AMT22M)
 
-### Project title: US Air Pollution Analysis (2022-20223)
+### Project title:
+
+# US Air Pollution Analysis (2022-20223)
 
 ### Project description:
 
@@ -18,7 +21,7 @@ This project analyzes air pollution trends across the United States using real-w
 
 Kaggle: [U.S. Air Pollution Dataset](https://www.kaggle.com/datasets/guslovesmath/us-pollution-data-200-to-2022)
 
-## Research Questions
+### Research Questions
 
 1. How has air quality (AQI) changed from 2022 to 2023?
 2. Which states have the highest and lowest average air pollution levels?
