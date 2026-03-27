@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-### Group members
+### Group members:
 
 1. Ashley Oliveira Andrade (ARO22B)
 2. Felipe Ubeid (FT23)
@@ -11,7 +11,7 @@
 
 ### Project title:
 
-# US Air Pollution Analysis (2022-20223)
+## US Air Pollution Analysis (2022-20223)
 
 ### Project description:
 
