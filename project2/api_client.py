@@ -5,6 +5,7 @@ import time
 BASE_URL = "https://api.open-meteo.com/v1/forecast"
 
 logger = logging.getLogger(__name__)
+logging.getLogger("api_client").addHandler(logging.NullHandler())  # ← added
 
 CITIES = [
     {"name": "Tallahassee", "latitude": 30.4383, "longitude": -84.2807},
@@ -26,10 +27,8 @@ def fetch_weather(latitude: float, longitude: float, retries: int = 1) -> dict |
         ),
         "timezone": "America/New_York",
     }
-
     attempts = 0
     max_attempts = 1 + retries
-
     while attempts < max_attempts:
         attempts += 1
         try:
@@ -37,47 +36,37 @@ def fetch_weather(latitude: float, longitude: float, retries: int = 1) -> dict |
             print(f"  Request Status: {response.status_code}")
             response.raise_for_status()
             return response.json()
-
         except requests.exceptions.Timeout:
             print(f"  Timeout on attempt {attempts}/{max_attempts}.")
             logger.warning("Request timed out (attempt %d/%d).", attempts, max_attempts)
             if attempts < max_attempts:
-                time.sleep(2)  # brief pause before retry
-
+                time.sleep(2)
         except requests.exceptions.HTTPError as e:
             print(f"  HTTP error: {e} — skipping.")
             logger.error("HTTP error %s — skipping this location.", e)
             return None  # non-transient, no point retrying
-
         except requests.exceptions.RequestException as e:
             print(f"  Network error: {e} — skipping.")
             logger.error("Network error: %s", e)
             return None
-
     logger.error("All %d attempt(s) failed for (%.4f, %.4f).", max_attempts, latitude, longitude)
     return None
 
 
 def fetch_all_cities(cities: list[dict] = CITIES) -> tuple[list[dict], list[str]]:
-    # Loop over each city (repeated API calls) and aggregate results
     all_records = []
     failed_cities = []
-
     for city in cities:
         print(f"\nFetching weather data for {city['name']}...")
         logger.info("Processing city: %s", city["name"])
-
         raw = fetch_weather(city["latitude"], city["longitude"], retries=1)
-
         if raw is None:
             logger.warning("Skipping %s — no data returned.", city["name"])
             failed_cities.append(city["name"])
             continue
-
         records = parse_data(raw, city["name"])
         all_records.extend(records)
         logger.info("Parsed %d hourly records for %s.", len(records), city["name"])
-
     return all_records, failed_cities
 
 
@@ -106,5 +95,4 @@ def parse_data(data: dict, city: str) -> list[dict]:
             "precipitation_mm":       safe_get(precipitation, i),
             "cloudcover_pct":         safe_get(cloudcover, i),
         })
-
     return records
