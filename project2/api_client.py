@@ -6,6 +6,14 @@ BASE_URL = "https://api.open-meteo.com/v1/forecast"
 
 logger = logging.getLogger(__name__)
 
+CITIES = [
+    {"name": "Tallahassee", "latitude": 30.4383, "longitude": -84.2807},
+    {"name": "Jacksonville", "latitude": 30.3322, "longitude": -81.6557},
+    {"name": "Orlando",      "latitude": 28.5383, "longitude": -81.3792},
+    {"name": "Tampa",        "latitude": 27.9506, "longitude": -82.4572},
+    {"name": "Miami",        "latitude": 25.7617, "longitude": -80.1918},
+]
+
 
 def fetch_weather(latitude: float, longitude: float, retries: int = 1) -> dict | None:
     params = {
@@ -48,6 +56,29 @@ def fetch_weather(latitude: float, longitude: float, retries: int = 1) -> dict |
 
     logger.error("All %d attempt(s) failed for (%.4f, %.4f).", max_attempts, latitude, longitude)
     return None
+
+
+def fetch_all_cities(cities: list[dict] = CITIES) -> tuple[list[dict], list[str]]:
+    # Loop over each city (repeated API calls) and aggregate results
+    all_records = []
+    failed_cities = []
+
+    for city in cities:
+        print(f"\nFetching weather data for {city['name']}...")
+        logger.info("Processing city: %s", city["name"])
+
+        raw = fetch_weather(city["latitude"], city["longitude"], retries=1)
+
+        if raw is None:
+            logger.warning("Skipping %s — no data returned.", city["name"])
+            failed_cities.append(city["name"])
+            continue
+
+        records = parse_data(raw, city["name"])
+        all_records.extend(records)
+        logger.info("Parsed %d hourly records for %s.", len(records), city["name"])
+
+    return all_records, failed_cities
 
 
 def parse_data(data: dict, city: str) -> list[dict]:
