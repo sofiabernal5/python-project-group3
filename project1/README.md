@@ -28,3 +28,22 @@ Kaggle: [U.S. Air Pollution Dataset](https://www.kaggle.com/datasets/guslovesmat
 3. Which pollutant contributes most to poor air quality?
 4. How are different pollutants correlated with overall AQI?
 5. What proportion of days fall into “Good,” “Moderate,” or “Unhealthy” air quality categories?
+
+### Contributions
+
+Ashley Oliveira Andrade
+- Visualization (Line Plot, Bar Plot, Histogram, Scatter Plot)
+
+Felipe Ubeid
+- ReadME
+- Summary and Key Findings
+- Final Code Review and Merge
+
+Sofia Bernal
+- Data Loading
+- Cleaning and Transformation
+
+Aidan Thompson
+- Descriptive Statistics and Simple EDA
+- Feature Exploration
+
