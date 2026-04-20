@@ -11,19 +11,19 @@ from .forms import AirQualityRecordForm
 def home(request):
     total_records   = AirQualityRecord.objects.count()
     total_locations = Location.objects.count()
-    recent          = AirQualityRecord.objects.select_related('location').order_by('-date')[:5]
+    recent_air_quality = AirQualityRecord.objects.select_related('location').order_by('-date')[:5]
 
     context = {
         'total_records':   total_records,
         'total_locations': total_locations,
-        'recent':          recent,
+        'recent_air_quality': recent_air_quality,
     }
     return render(request, 'core/home.html', context)
 
 
-# ── List (paginated) ────────────────────────────────────────────────────────
+# ── Air Quality List (paginated) ────────────────────────────────────────────────────────
 
-def record_list(request):
+def air_quality_list(request):
     qs        = AirQualityRecord.objects.select_related('location').order_by('-date')
     paginator = Paginator(qs, 20)                          # 20 per page
     page_num  = request.GET.get('page', 1)
@@ -32,31 +32,31 @@ def record_list(request):
     return render(request, 'core/list.html', {'page_obj': page_obj})
 
 
-# ── Detail ──────────────────────────────────────────────────────────────────
+# ── Air Quality Detail ──────────────────────────────────────────────────────────────────
 
-def record_detail(request, pk):
+def air_quality_detail(request, pk):
     record = get_object_or_404(AirQualityRecord.objects.select_related('location'), pk=pk)
     return render(request, 'core/detail.html', {'record': record})
 
 
-# ── Create ──────────────────────────────────────────────────────────────────
+# ── Air Quality Create ──────────────────────────────────────────────────────────────────
 
-def record_create(request):
+def air_quality_create(request):
     if request.method == 'POST':
         form = AirQualityRecordForm(request.POST)
         if form.is_valid():
             record = form.save()
             messages.success(request, 'Record created successfully.')
-            return redirect('core:record_detail', pk=record.pk)
+            return redirect('core:air_quality_detail', pk=record.pk)
     else:
         form = AirQualityRecordForm()
 
     return render(request, 'core/form.html', {'form': form, 'action': 'Create'})
 
 
-# ── Update ──────────────────────────────────────────────────────────────────
+# ── Air Quality Update ──────────────────────────────────────────────────────────────────
 
-def record_update(request, pk):
+def air_quality_update(request, pk):
     record = get_object_or_404(AirQualityRecord, pk=pk)
 
     if request.method == 'POST':
@@ -64,7 +64,7 @@ def record_update(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, 'Record updated successfully.')
-            return redirect('core:record_detail', pk=record.pk)
+            return redirect('core:air_quality_detail', pk=record.pk)
     else:
         form = AirQualityRecordForm(instance=record)
 
@@ -75,14 +75,14 @@ def record_update(request, pk):
     })
 
 
-# ── Delete ──────────────────────────────────────────────────────────────────
+# ── Air Quality Delete ──────────────────────────────────────────────────────────────────
 
-def record_delete(request, pk):
+def air_quality_delete(request, pk):
     record = get_object_or_404(AirQualityRecord, pk=pk)
 
     if request.method == 'POST':
         record.delete()
         messages.success(request, 'Record deleted.')
-        return redirect('core:record_list')
+        return redirect('core:air_quality_list')
 
     return render(request, 'core/confirm_delete.html', {'record': record})

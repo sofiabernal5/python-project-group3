@@ -12,7 +12,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-        <a class="navbar-brand" href="{% url 'core:home' %}">🌫️ AirQuality</a>
+        <a class="navbar-brand" href="{% url 'core:home' %}">🌫️ AirQuality&Weather</a>
         <button class="navbar-toggler" type="button"
                 data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,10 +24,10 @@
                     <a class="nav-link" href="{% url 'core:home' %}">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'core:record_list' %}">Records</a>
+                    <a class="nav-link" href="{% url 'core:air_quality_list' %}">Air Quality Records</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'core:record_create' %}">Add Record</a>
+                    <a class="nav-link" href="{% url 'core:air_quality_create' %}">Add Air Quality Record</a>
                 </li>
                 {# Uncomment after implementing section 2.4: #}
                 {# <li class="nav-item"><a class="nav-link" href="{% url 'core:analytics' %}">Analytics</a></li> #}
@@ -53,7 +53,7 @@
 
 <footer class="footer py-3 bg-light mt-auto">
     <div class="container text-center text-muted">
-        <small>AirQuality App &copy; 2026</small>
+        <small>AirQuality&Weather App &copy; 2026</small>
     </div>
 </footer>
 
