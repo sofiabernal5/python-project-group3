@@ -1,4 +1,8 @@
-from django.contrib import admin
+from django.contrib import admin, messages
+from django.core.management import call_command
+from django.utils.html import format_html
+from django.urls import path
+from django.shortcuts import redirect
 from .models import Location, DataRun, AirQualityRecord, WeatherRecord, City
 
 
@@ -55,11 +59,24 @@ class CityAdmin(admin.ModelAdmin):
     list_display = ("name", "latitude", "longitude")
     search_fields = ("name",)
     
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path("fetch-weather/", self.admin_site.admin_view(self.fetch_weather))
+        ]
+        return custom_urls + urls
+
+    def fetch_weather(self, request):
+        call_command("fetch_data")
+        self.message_user(request, "Weather data fetched successfully.")
+        return redirect("..")
+    
 @admin.register(WeatherRecord)
 class WeatherRecordAdmin(admin.ModelAdmin):
     list_display = (
         "city",
         "date",
+        "time",
         "temperature",
         "apparent_temperature",
         "humidity",

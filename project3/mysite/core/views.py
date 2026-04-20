@@ -1,22 +1,32 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
 from django.contrib import messages
+from django.core.management import call_command
+from django.shortcuts import redirect
+from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
+from django.views.decorators.http import require_POST
 
-from .models import AirQualityRecord, Location
+from .models import AirQualityRecord, Location, City, WeatherRecord
 from .forms import AirQualityRecordForm
 
 
 # ── Home ────────────────────────────────────────────────────────────────────
 
 def home(request):
-    total_records   = AirQualityRecord.objects.count()
+    total_records = AirQualityRecord.objects.count() + WeatherRecord.objects.count()
     total_locations = Location.objects.count()
+    total_cities = City.objects.count()
+    
     recent_air_quality = AirQualityRecord.objects.select_related('location').order_by('-date')[:5]
+    recent_weather = WeatherRecord.objects.select_related('location').order_by('-date')[:5]
 
     context = {
         'total_records':   total_records,
         'total_locations': total_locations,
+        'total_cities':    total_cities,
         'recent_air_quality': recent_air_quality,
+        'recent_weather': recent_weather,
     }
     return render(request, 'core/home.html', context)
 
@@ -86,3 +96,16 @@ def air_quality_delete(request, pk):
         return redirect('core:air_quality_list')
 
     return render(request, 'core/confirm_delete.html', {'record': record})
+
+# Fetch Weather Data ─────────────────────────────────────────────────────────────────────
+
+@staff_member_required
+@require_POST
+def fetch_weather_data(request):
+    try:
+        call_command("fetch_data")
+        messages.success(request, "Weather data fetched successfully.")
+    except Exception as e:
+        messages.error(request, f"Fetch failed: {e}")
+
+    return redirect("core:home")

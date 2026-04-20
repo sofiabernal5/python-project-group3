@@ -123,6 +123,7 @@ class WeatherRecord(models.Model):
 
     city = models.ForeignKey(City, on_delete=models.CASCADE, related_name="weather_records")
     date = models.DateField()
+    time = models.TimeField()
 
     temperature = models.FloatField(null=True, blank=True)
     apparent_temperature = models.FloatField(null=True, blank=True)
@@ -135,9 +136,9 @@ class WeatherRecord(models.Model):
 
     class Meta:
         ordering = ["-date"]
-        unique_together = ("city", "date")
+        unique_together = ("city", "date", "time")
         verbose_name = "Weather Record"
         verbose_name_plural = "Weather Records"
 
     def __str__(self):
-        return f"{self.city.name} — {self.date}"
+        return f"{self.city.name} - {self.date} {self.time}"
