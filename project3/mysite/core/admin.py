@@ -1,3 +1,50 @@
 from django.contrib import admin
+from .models import Location, DataRun, AirQualityRecord
 
-# Register your models here.
+
+@admin.register(Location)
+class LocationAdmin(admin.ModelAdmin):
+    list_display  = ("city", "county", "state", "address")
+    list_filter   = ("state", "county")
+    search_fields = ("city", "county", "state", "address")
+    ordering      = ("state", "city")
+
+
+@admin.register(DataRun)
+class DataRunAdmin(admin.ModelAdmin):
+    list_display    = ("source", "started_at", "records_created", "records_updated")
+    list_filter     = ("source",)
+    readonly_fields = ("started_at",)
+    ordering        = ("-started_at",)
+
+
+@admin.register(AirQualityRecord)
+class AirQualityRecordAdmin(admin.ModelAdmin):
+    list_display    = ("date", "location", "o3_aqi", "co_aqi", "so2_aqi", "no2_aqi", "source")
+    list_filter     = ("source", "location__state", "location__city")
+    search_fields   = ("location__city", "location__state", "location__address")
+    date_hierarchy  = "date"
+    ordering        = ("-date",)
+    readonly_fields = ("created_at",)
+
+    fieldsets = (
+        ("Record Info", {
+            "fields": ("location", "date", "source", "data_run", "created_at"),
+        }),
+        ("Ozone (O3)", {
+            "fields": ("o3_mean", "o3_1st_max_value", "o3_1st_max_hour", "o3_aqi"),
+            "classes": ("collapse",),
+        }),
+        ("Carbon Monoxide (CO)", {
+            "fields": ("co_mean", "co_1st_max_value", "co_1st_max_hour", "co_aqi"),
+            "classes": ("collapse",),
+        }),
+        ("Sulphur Dioxide (SO2)", {
+            "fields": ("so2_mean", "so2_1st_max_value", "so2_1st_max_hour", "so2_aqi"),
+            "classes": ("collapse",),
+        }),
+        ("Nitrogen Dioxide (NO2)", {
+            "fields": ("no2_mean", "no2_1st_max_value", "no2_1st_max_hour", "no2_aqi"),
+            "classes": ("collapse",),
+        }),
+    )

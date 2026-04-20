@@ -416,3 +416,9 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# Python cache files
+db.sqlite3
+__pycache__/
+*.pyc
+*.cpython-*.pyc

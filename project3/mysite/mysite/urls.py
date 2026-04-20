@@ -23,8 +23,8 @@ urlpatterns = [
     # path('', views.home, name='home'),
     path('/', views.home),
     path('/records', views.records),
-    path('/records/<pk>'),
-    path('/records/add/'),
-    path('/records/<pk>/edit/'),
-    path('records/<pk>/delete/')
+    #path('/records/<pk>'),
+    #path('/records/add/'),
+    #path('/records/<pk>/edit/'),
+    #path('records/<pk>/delete/')
 ]
