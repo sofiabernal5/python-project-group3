@@ -1,0 +1,103 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Records — Weather Data{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Weather Records</h2>
+    <a href="{% url 'core:record_create' %}" class="btn btn-success">+ Add Record</a>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>#</th>
+                <th>City</th>
+                <th>Time</th>
+                <th>Temp (°C)</th>
+                <th>Humidity (%)</th>
+                <th>Wind (km/h)</th>
+                <th>Cloudy</th>
+                <th>Source</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in page_obj %}
+            <tr>
+                <td>{{ record.pk }}</td>
+                <td>{{ record.city }}</td>
+                <td>{{ record.time|date:"Y-m-d H:i" }}</td>
+                <td>{{ record.temperature_c }}</td>
+                <td>{{ record.humidity_pct }}</td>
+                <td>{{ record.windspeed_kmh }}</td>
+                <td>
+                    {% if record.is_cloudy %}
+                        <span class="badge bg-secondary">Yes</span>
+                    {% else %}
+                        <span class="badge bg-warning text-dark">No</span>
+                    {% endif %}
+                </td>
+                <td>{{ record.get_source_display }}</td>
+                <td>
+                    <a href="{% url 'core:record_detail' record.pk %}" class="btn btn-sm btn-info">View</a>
+                    <a href="{% url 'core:record_update' record.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                    <a href="{% url 'core:record_delete' record.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="9" class="text-center text-muted py-4">
+                    No records found. <a href="{% url 'core:record_create' %}">Add one now.</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Pagination -->
+{% if page_obj.paginator.num_pages > 1 %}
+<nav aria-label="Records pagination">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo; Previous</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <span class="page-link">&laquo; Previous</span>
+        </li>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+            <li class="page-item active" aria-current="page">
+                <span class="page-link">{{ num }}</span>
+            </li>
+            {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+            </li>
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next &raquo;</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <span class="page-link">Next &raquo;</span>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+
+<p class="text-center text-muted small">
+    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+    &mdash; {{ page_obj.paginator.count }} total record{{ page_obj.paginator.count|pluralize }}
+</p>
+{% endblock %}
