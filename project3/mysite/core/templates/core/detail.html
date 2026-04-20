@@ -1,85 +1,90 @@
 {% extends 'core/base.html' %}
 
-{% block title %}Record #{{ record.pk }} — Weather Data{% endblock %}
+{% block title %}Records — Air Quality{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Record #{{ record.pk }}</h2>
-    <div class="d-flex gap-2">
-        <a href="{% url 'core:record_update' record.pk %}" class="btn btn-warning">Edit</a>
-        <a href="{% url 'core:record_delete' record.pk %}" class="btn btn-danger">Delete</a>
-        <a href="{% url 'core:record_list' %}" class="btn btn-secondary">Back to List</a>
-    </div>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Air Quality Records</h2>
+    <a href="{% url 'core:record_create' %}" class="btn btn-success">+ Add Record</a>
 </div>
 
-<div class="card shadow-sm">
-    <div class="card-header bg-dark text-white">
-        <h5 class="mb-0">{{ record.city }} &mdash; {{ record.time|date:"F j, Y, H:i" }}</h5>
-    </div>
-    <div class="card-body">
-        <div class="row g-3">
-            <div class="col-md-6">
-                <table class="table table-bordered">
-                    <tbody>
-                        <tr>
-                            <th class="table-light" style="width:45%">City</th>
-                            <td>{{ record.city }}</td>
-                        </tr>
-                        <tr>
-                            <th class="table-light">Time</th>
-                            <td>{{ record.time|date:"Y-m-d H:i" }}</td>
-                        </tr>
-                        <tr>
-                            <th class="table-light">Temperature</th>
-                            <td>{{ record.temperature_c }} °C</td>
-                        </tr>
-                        <tr>
-                            <th class="table-light">Apparent Temp.</th>
-                            <td>{{ record.apparent_temperature_c }} °C</td>
-                        </tr>
-                        <tr>
-                            <th class="table-light">Humidity</th>
-                            <td>{{ record.humidity_pct }} %</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="col-md-6">
-                <table class="table table-bordered">
-                    <tbody>
-                        <tr>
-                            <th class="table-light" style="width:45%">Wind Speed</th>
-                            <td>{{ record.windspeed_kmh }} km/h</td>
-                        </tr>
-                        <tr>
-                            <th class="table-light">Precipitation</th>
-                            <td>{{ record.precipitation_mm }} mm</td>
-                        </tr>
-                        <tr>
-                            <th class="table-light">Cloud Cover</th>
-                            <td>{{ record.cloudcover_pct }} %</td>
-                        </tr>
-                        <tr>
-                            <th class="table-light">Cloudy</th>
-                            <td>
-                                {% if record.is_cloudy %}
-                                    <span class="badge bg-secondary">Yes</span>
-                                {% else %}
-                                    <span class="badge bg-warning text-dark">No</span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th class="table-light">Source</th>
-                            <td>{{ record.get_source_display }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    <div class="card-footer text-muted small">
-        Record created: {{ record.created_at|date:"Y-m-d H:i" }}
-    </div>
+<div class="table-responsive">
+    <table class="table table-striped table-hover align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>#</th>
+                <th>Date</th>
+                <th>City</th>
+                <th>State</th>
+                <th>O3 AQI</th>
+                <th>CO AQI</th>
+                <th>SO2 AQI</th>
+                <th>NO2 AQI</th>
+                <th>Source</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in page_obj %}
+            <tr>
+                <td>{{ record.pk }}</td>
+                <td>{{ record.date }}</td>
+                <td>{{ record.location.city }}</td>
+                <td>{{ record.location.state }}</td>
+                <td>{{ record.o3_aqi|default:"—" }}</td>
+                <td>{{ record.co_aqi|default:"—" }}</td>
+                <td>{{ record.so2_aqi|default:"—" }}</td>
+                <td>{{ record.no2_aqi|default:"—" }}</td>
+                <td>{{ record.get_source_display }}</td>
+                <td>
+                    <a href="{% url 'core:record_detail' record.pk %}" class="btn btn-sm btn-info">View</a>
+                    <a href="{% url 'core:record_update' record.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                    <a href="{% url 'core:record_delete' record.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="10" class="text-center text-muted py-4">
+                    No records found. <a href="{% url 'core:record_create' %}">Add one now.</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
+
+{% if page_obj.paginator.num_pages > 1 %}
+<nav aria-label="Records pagination">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo; Previous</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled"><span class="page-link">&laquo; Previous</span></li>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+            {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
+            <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next &raquo;</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled"><span class="page-link">Next &raquo;</span></li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+
+<p class="text-center text-muted small">
+    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+    &mdash; {{ page_obj.paginator.count }} total record{{ page_obj.paginator.count|pluralize }}
+</p>
 {% endblock %}

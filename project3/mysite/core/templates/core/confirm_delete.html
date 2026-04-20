@@ -1,6 +1,6 @@
 {% extends 'core/base.html' %}
 
-{% block title %}Delete Record #{{ record.pk }} — Weather Data{% endblock %}
+{% block title %}Delete Record #{{ record.pk }} — Air Quality{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
@@ -10,13 +10,11 @@
                 <h5 class="mb-0">Confirm Deletion</h5>
             </div>
             <div class="card-body">
-                <p class="mb-1">
-                    You are about to permanently delete the weather record for:
-                </p>
+                <p class="mb-1">You are about to permanently delete the air quality record for:</p>
                 <ul class="mb-3">
-                    <li><strong>City:</strong> {{ record.city }}</li>
-                    <li><strong>Time:</strong> {{ record.time|date:"F j, Y, H:i" }}</li>
-                    <li><strong>Temperature:</strong> {{ record.temperature_c }} °C</li>
+                    <li><strong>Location:</strong> {{ record.location.city }}, {{ record.location.state }}</li>
+                    <li><strong>Date:</strong> {{ record.date }}</li>
+                    <li><strong>Dominant Pollutant:</strong> {{ record.dominant_pollutant }}</li>
                 </ul>
                 <p class="text-danger fw-semibold">This action cannot be undone.</p>
                 <form method="post">

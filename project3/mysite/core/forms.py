@@ -1,25 +1,26 @@
 from django import forms
-from .models import Classification
+from .models import AirQualityRecord
 
 
-class ClassificationForm(forms.ModelForm):
+class AirQualityRecordForm(forms.ModelForm):
     class Meta:
-        model = Classification
+        model  = AirQualityRecord
         fields = [
-            'city', 'time', 'temperature_c', 'apparent_temperature_c',
-            'humidity_pct', 'windspeed_kmh', 'precipitation_mm',
-            'cloudcover_pct', 'source',
+            'location', 'date', 'source',
+            'o3_mean',  'o3_aqi',
+            'co_mean',  'co_aqi',
+            'so2_mean', 'so2_aqi',
+            'no2_mean', 'no2_aqi',
         ]
         widgets = {
-            'time': forms.DateTimeInput(
-                attrs={'type': 'datetime-local', 'class': 'form-control'}
-            ),
+            'date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
-            if isinstance(field.widget, forms.Select):
-                field.widget.attrs.setdefault('class', 'form-select')
-            elif not isinstance(field.widget, forms.CheckboxInput):
-                field.widget.attrs.setdefault('class', 'form-control')
+            widget = field.widget
+            if isinstance(widget, forms.Select):
+                widget.attrs.setdefault('class', 'form-select')
+            elif not isinstance(widget, forms.CheckboxInput):
+                widget.attrs.setdefault('class', 'form-control')
