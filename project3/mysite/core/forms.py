@@ -1,5 +1,5 @@
 from django import forms
-from .models import AirQualityRecord
+from .models import AirQualityRecord, WeatherRecord
 
 
 class AirQualityRecordForm(forms.ModelForm):
@@ -24,3 +24,13 @@ class AirQualityRecordForm(forms.ModelForm):
                 widget.attrs.setdefault('class', 'form-select')
             elif not isinstance(widget, forms.CheckboxInput):
                 widget.attrs.setdefault('class', 'form-control')
+
+class WeatherRecordForm(forms.ModelForm):
+    class Meta:
+        model = WeatherRecord
+        fields = "__all__"
+        labels = {
+            "apparent_temperature_c": "Apparent Temperature (°C)",
+            "humidity_pct": "Humidity (%)",
+            "windspeed_kmh": "Wind Speed (km/h)",
+        }

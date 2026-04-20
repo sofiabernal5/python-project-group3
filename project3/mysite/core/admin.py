@@ -1,13 +1,14 @@
 from django.contrib import admin
-from .models import Location, DataRun, AirQualityRecord
+from .models import Location, DataRun, AirQualityRecord, WeatherRecord, City
 
 
 @admin.register(Location)
 class LocationAdmin(admin.ModelAdmin):
     list_display  = ("city", "county", "state", "address")
     list_filter   = ("state", "county")
-    search_fields = ("city", "county", "state", "address")
+    search_fields = ("city", "state", "address")
     ordering      = ("state", "city")
+    fields = ("address", "city", "county", "state")
 
 
 @admin.register(DataRun)
@@ -48,3 +49,31 @@ class AirQualityRecordAdmin(admin.ModelAdmin):
             "classes": ("collapse",),
         }),
     )
+
+@admin.register(City)
+class CityAdmin(admin.ModelAdmin):
+    list_display = ("name", "latitude", "longitude")
+    search_fields = ("name",)
+    
+@admin.register(WeatherRecord)
+class WeatherRecordAdmin(admin.ModelAdmin):
+    list_display = (
+        "city",
+        "date",
+        "temperature",
+        "apparent_temperature",
+        "humidity",
+        "windspeed",
+        "precipitation",
+        "cloudcover",
+        "source",
+    )
+
+    list_filter = ("city", "date")
+    search_fields = ("city__name",)
+
+    @admin.display(description="City")
+    def city_name(self, obj):
+        return obj.city.name
+    
+    
