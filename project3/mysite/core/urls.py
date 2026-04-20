@@ -10,6 +10,8 @@ urlpatterns = [
     path('air-quality/<int:pk>/', views.air_quality_detail, name='air_quality_detail'),
     path('air-quality/<int:pk>/edit/', views.air_quality_update, name='air_quality_update'),
     path('air-quality/<int:pk>/delete/', views.air_quality_delete, name='air_quality_delete'),
+    path('weather/', views.weather_list, name='weather_list'),
+    path('weather/<int:pk>/', views.weather_detail, name='weather_detail'),
     
-    # Section 2.4 — analytics URL's go below
+    # Section 2.4 - analytics URL's go below
 ]

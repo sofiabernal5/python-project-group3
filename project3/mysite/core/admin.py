@@ -86,7 +86,7 @@ class WeatherRecordAdmin(admin.ModelAdmin):
         "source",
     )
 
-    list_filter = ("city", "date")
+    list_filter = ("city", "date", "time")
     search_fields = ("city__name",)
 
     @admin.display(description="City")

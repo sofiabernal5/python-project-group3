@@ -42,7 +42,7 @@ class DataRun(models.Model):
 
     def __str__(self):
         return (
-            f"{self.get_source_display()} — "
+            f"{self.get_source_display()} - "
             f"{self.started_at.strftime('%Y-%m-%d %H:%M')} "
             f"({self.records_created} created, {self.records_updated} updated)"
         )
@@ -88,7 +88,7 @@ class AirQualityRecord(models.Model):
         verbose_name_plural = "Air Quality Records"
 
     def __str__(self):
-        return f"{self.location.city} — {self.date}"
+        return f"{self.location.city} - {self.date}"
 
     @property
     def max_aqi(self):

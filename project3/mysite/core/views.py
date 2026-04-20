@@ -19,7 +19,7 @@ def home(request):
     total_cities = City.objects.count()
     
     recent_air_quality = AirQualityRecord.objects.select_related('location').order_by('-date')[:5]
-    recent_weather = WeatherRecord.objects.select_related('location').order_by('-date')[:5]
+    recent_weather = WeatherRecord.objects.select_related('city').order_by('-date', '-time')[:5]
 
     context = {
         'total_records':   total_records,
@@ -107,5 +107,20 @@ def fetch_weather_data(request):
         messages.success(request, "Weather data fetched successfully.")
     except Exception as e:
         messages.error(request, f"Fetch failed: {e}")
-
     return redirect("core:home")
+
+# ── Weather List (paginated) ────────────────────────────────────────────────────────
+
+def weather_list(request):
+    qs = WeatherRecord.objects.select_related('city').order_by('-date', '-time')
+    paginator = Paginator(qs, 20)                          # 20 per page
+    page_num = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_num)
+
+    return render(request, 'core/weather_list.html', {'page_obj': page_obj})
+
+# ── Weather Detail ──────────────────────────────────────────────────────────────────
+
+def weather_detail(request, pk):
+    record = get_object_or_404(WeatherRecord.objects.select_related('city'), pk=pk)
+    return render(request, 'core/weather_detail.html', {'record': record})

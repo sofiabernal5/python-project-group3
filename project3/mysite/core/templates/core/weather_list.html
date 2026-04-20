@@ -1,11 +1,10 @@
 {% extends 'core/base.html' %}
 
-{% block title %}Records - Air Quality{% endblock %}
+{% block title %}Weather Records{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>Air Quality Records</h2>
-    <a href="{% url 'core:air_quality_create' %}" class="btn btn-success">+ Add Record</a>
+    <h2>Weather Records</h2>
 </div>
 
 <div class="table-responsive">
@@ -14,38 +13,41 @@
             <tr>
                 <th>#</th>
                 <th>Date</th>
+                <th>Time</th>
                 <th>City</th>
-                <th>State</th>
-                <th>O₃ AQI</th>
-                <th>CO AQI</th>
-                <th>SO₂ AQI</th>
-                <th>NO₂ AQI</th>
+                <th>Temp (°C)</th>
+                <th>Feels Like</th>
+                <th>Humidity</th>
+                <th>Wind</th>
+                <th>Precip</th>
+                <th>Cloud</th>
                 <th>Source</th>
                 <th>Actions</th>
             </tr>
         </thead>
+
         <tbody>
             {% for record in page_obj %}
             <tr>
                 <td>{{ record.pk }}</td>
                 <td>{{ record.date }}</td>
-                <td>{{ record.location.city }}</td>
-                <td>{{ record.location.state }}</td>
-                <td>{{ record.o3_aqi|default:"-" }}</td>
-                <td>{{ record.co_aqi|default:"-" }}</td>
-                <td>{{ record.so2_aqi|default:"-" }}</td>
-                <td>{{ record.no2_aqi|default:"-" }}</td>
+                <td>{{ record.time }}</td>
+                <td>{{ record.city.name }}</td>
+                <td>{{ record.temperature|default:"-" }}</td>
+                <td>{{ record.apparent_temperature|default:"-" }}</td>
+                <td>{{ record.humidity|default:"-" }}%</td>
+                <td>{{ record.windspeed|default:"-" }} km/h</td>
+                <td>{{ record.precipitation|default:"-" }}</td>
+                <td>{{ record.cloudcover|default:"-" }}%</td>
                 <td>{{ record.get_source_display }}</td>
                 <td>
-                    <a href="{% url 'core:air_quality_detail' record.pk %}" class="btn btn-sm btn-info">View</a>
-                    <a href="{% url 'core:air_quality_update' record.pk %}" class="btn btn-sm btn-warning">Edit</a>
-                    <a href="{% url 'core:air_quality_delete' record.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                    <a href="{% url 'core:weather_detail' record.pk %}" class="btn btn-sm btn-info">View</a>
                 </td>
             </tr>
             {% empty %}
             <tr>
-                <td colspan="10" class="text-center text-muted py-4">
-                    No records found. <a href="{% url 'core:air_quality_create' %}">Add one now.</a>
+                <td colspan="11" class="text-center text-muted py-4">
+                    No weather records found.
                 </td>
             </tr>
             {% endfor %}
@@ -54,11 +56,13 @@
 </div>
 
 {% if page_obj.paginator.num_pages > 1 %}
-<nav aria-label="Records pagination">
+<nav>
     <ul class="pagination justify-content-center">
         {% if page_obj.has_previous %}
         <li class="page-item">
-            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo; Previous</a>
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                &laquo; Previous
+            </a>
         </li>
         {% else %}
         <li class="page-item disabled"><span class="page-link">&laquo; Previous</span></li>
@@ -66,15 +70,19 @@
 
         {% for num in page_obj.paginator.page_range %}
             {% if page_obj.number == num %}
-            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
             {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
-            <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                </li>
             {% endif %}
         {% endfor %}
 
         {% if page_obj.has_next %}
         <li class="page-item">
-            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next &raquo;</a>
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                Next &raquo;
+            </a>
         </li>
         {% else %}
         <li class="page-item disabled"><span class="page-link">Next &raquo;</span></li>
@@ -87,4 +95,5 @@
     Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
     &mdash; {{ page_obj.paginator.count }} total record{{ page_obj.paginator.count|pluralize }}
 </p>
+
 {% endblock %}

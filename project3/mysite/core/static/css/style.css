@@ -27,7 +27,7 @@ main.container {
     flex-shrink: 0;
 }
 
-/* 4. Table action buttons — tighter spacing */
+/* 4. Table action buttons - tighter spacing */
 .table td .btn + .btn {
     margin-left: 0.25rem;
 }

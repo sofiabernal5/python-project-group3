@@ -1,0 +1,36 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Weather Record #{{ record.pk }}{% endblock %}
+
+{% block content %}
+
+<div class="card shadow-sm">
+    <div class="card-body">
+
+        <h3 class="mb-3">
+            Weather Record #{{ record.pk }}
+        </h3>
+
+        <p><strong>Date:</strong> {{ record.date }}</p>
+        <p><strong>Time:</strong> {{ record.time }}</p>
+        <p><strong>City:</strong> {{ record.city.name }}</p>
+
+        <hr>
+
+        <p><strong>Temperature:</strong> {{ record.temperature|default:"-" }} °C</p>
+        <p><strong>Feels Like:</strong> {{ record.apparent_temperature|default:"-" }} °C</p>
+        <p><strong>Humidity:</strong> {{ record.humidity|default:"-" }}%</p>
+        <p><strong>Wind Speed:</strong> {{ record.windspeed|default:"-" }} km/h</p>
+        <p><strong>Precipitation:</strong> {{ record.precipitation|default:"-" }} mm</p>
+        <p><strong>Cloud Cover:</strong> {{ record.cloudcover|default:"-" }}%</p>
+
+        <p><strong>Source:</strong> {{ record.get_source_display }}</p>
+
+        <hr>
+
+        <a href="{% url 'core:weather_list' %}" class="btn btn-secondary">Back</a>
+
+    </div>
+</div>
+
+{% endblock %}
