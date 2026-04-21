@@ -1,53 +1,242 @@
-/* 1. Navbar brand styling */
-.navbar-brand {
-    font-size: 1.3rem;
-    font-weight: 700;
-    letter-spacing: 0.04em;
+html {
+    scroll-behavior: smooth;
 }
 
-/* 2. Card lift effect on hover */
-.card {
-    transition: transform 0.18s ease, box-shadow 0.18s ease;
-}
-.card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 0.6rem 1.2rem rgba(0, 0, 0, 0.12) !important;
+:root {
+    --app-bg: #f4f7fb;
+    --app-surface: rgba(255, 255, 255, 0.88);
+    --app-surface-strong: #ffffff;
+    --app-border: rgba(15, 23, 42, 0.08);
+    --app-text: #132238;
+    --app-muted: #5f6b7a;
+    --app-accent: #0d6efd;
+    --app-accent-2: #0f766e;
 }
 
-/* 3. Sticky footer via flex layout */
 body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    background: var(--app-bg);
+    color: var(--app-text);
+    font-family: 'Manrope', sans-serif;
 }
-main.container {
+
+body::before,
+body::after {
+    content: none;
+}
+
+.app-navbar {
+    background: rgba(11, 18, 32, 0.88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
+}
+
+.navbar-brand {
+    font-size: 1.15rem;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+}
+
+.nav-link {
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.78) !important;
+}
+
+.nav-link:hover,
+.nav-link:focus,
+.nav-link.active {
+    color: #ffffff !important;
+}
+
+.app-main {
     flex: 1 0 auto;
 }
-.footer {
+
+.app-footer {
     flex-shrink: 0;
+    background: rgba(255, 255, 255, 0.6);
+    border-top: 1px solid var(--app-border);
+    backdrop-filter: blur(10px);
 }
 
-/* 4. Table action buttons - tighter spacing */
-.table td .btn + .btn {
-    margin-left: 0.25rem;
+.card {
+    background: var(--app-surface);
+    border: 1px solid var(--app-border);
+    border-radius: 1rem;
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    overflow: hidden;
 }
 
-/* 5. Form control focus accent */
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 22px 48px rgba(15, 23, 42, 0.12) !important;
+}
+
+.card-header {
+    background: rgba(255, 255, 255, 0.82) !important;
+    border-bottom: 1px solid var(--app-border);
+    color: var(--app-text);
+}
+
+.page-hero {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1.25rem;
+    box-shadow: 0 22px 45px rgba(11, 18, 32, 0.18);
+}
+
+.page-hero::after {
+    content: none;
+}
+
+.page-kicker {
+    letter-spacing: 0.18em;
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.hero-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    align-items: stretch;
+}
+
+.hero-actions .btn {
+    width: 100%;
+}
+
+@media (min-width: 992px) {
+    .hero-actions {
+        margin-left: auto;
+        max-width: 220px;
+    }
+}
+
+.stat-card {
+    background: var(--app-surface-strong);
+    border-radius: 1rem;
+}
+
+.stat-value {
+    line-height: 1;
+}
+
+.table {
+    color: var(--app-text);
+}
+
+.table > :not(caption) > * > * {
+    padding: 0.9rem 1rem;
+    border-bottom-color: rgba(15, 23, 42, 0.08);
+}
+
+.table thead th {
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    color: var(--app-muted);
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) > * {
+    --bs-table-accent-bg: rgba(13, 110, 253, 0.03);
+}
+
+.table-responsive {
+    border-radius: 0 0 1rem 1rem;
+}
+
+.btn {
+    border-radius: 0.8rem;
+    font-weight: 700;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.btn-sm {
+    border-radius: 0.7rem;
+}
+
+.btn-primary {
+    box-shadow: 0 8px 18px rgba(13, 110, 253, 0.18);
+}
+
+.btn-success {
+    box-shadow: 0 8px 18px rgba(25, 135, 84, 0.18);
+}
+
+.btn-danger {
+    box-shadow: 0 8px 18px rgba(220, 53, 69, 0.18);
+}
+
+.form-control,
+.form-select {
+    border-radius: 0.85rem;
+    border-color: rgba(15, 23, 42, 0.12);
+    padding: 0.8rem 0.95rem;
+    background-color: rgba(255, 255, 255, 0.95);
+}
+
 .form-control:focus,
 .form-select:focus {
-    border-color: #0d6efd;
-    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.2);
+    border-color: rgba(13, 110, 253, 0.55);
+    box-shadow: 0 0 0 0.18rem rgba(13, 110, 253, 0.16);
 }
 
-/* 6. Badge pill shape */
 .badge {
-    border-radius: 0.4em;
-    font-size: 0.78em;
-    padding: 0.35em 0.65em;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    padding: 0.35em 0.7em;
 }
 
-/* 7. Pagination active page highlight */
+.pagination .page-link {
+    border-radius: 0.75rem;
+    margin: 0 0.15rem;
+    border-color: rgba(15, 23, 42, 0.08);
+}
+
 .pagination .page-item.active .page-link {
-    background-color: #0d6efd;
-    border-color: #0d6efd;
+    background-color: var(--app-accent);
+    border-color: var(--app-accent);
+}
+
+.detail-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.detail-item {
+    padding: 1rem 1.1rem;
+    border-radius: 0.95rem;
+    background: rgba(13, 110, 253, 0.04);
+    border: 1px solid rgba(13, 110, 253, 0.08);
+}
+
+.detail-label {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--app-muted);
+    margin-bottom: 0.35rem;
+}
+
+.detail-value {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--app-text);
+}
+
+.analytics-chart-wrap {
+    position: relative;
+    min-height: 320px;
+}
+
+.analytics-chart-wrap canvas {
+    width: 100% !important;
+    height: 100% !important;
 }

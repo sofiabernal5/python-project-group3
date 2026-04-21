@@ -12,6 +12,7 @@ urlpatterns = [
     path('air-quality/<int:pk>/delete/', views.air_quality_delete, name='air_quality_delete'),
     path('weather/', views.weather_list, name='weather_list'),
     path('weather/<int:pk>/', views.weather_detail, name='weather_detail'),
+    path('analytics/', views.analytics, name='analytics'),
     
     # Section 2.4 - analytics URL's go below
 ]

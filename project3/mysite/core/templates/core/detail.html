@@ -4,28 +4,68 @@
 
 {% block content %}
 
-<div class="card shadow-sm">
-    <div class="card-body">
-        <h3 class="mb-3">Air Quality Record #{{ record.pk }}</h3>
+<div class="card page-hero bg-dark text-white mb-4 border-0">
+    <div class="card-body p-4 p-md-5 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+        <div>
+            <p class="page-kicker text-white-50 mb-2">AIR QUALITY DETAIL</p>
+            <h1 class="h3 fw-bold mb-1">Record #{{ record.pk }}</h1>
+            <p class="mb-0 text-white-75">{{ record.location.city }}, {{ record.location.state }} on {{ record.date }}</p>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{% url 'core:air_quality_update' record.pk %}" class="btn btn-light">Edit</a>
+            <a href="{% url 'core:air_quality_delete' record.pk %}" class="btn btn-outline-light">Delete</a>
+            <a href="{% url 'core:air_quality_list' %}" class="btn btn-outline-light">Back</a>
+        </div>
+    </div>
+</div>
 
-        <p><strong>Date:</strong> {{ record.date }}</p>
-        <p><strong>City:</strong> {{ record.location.city }}</p>
-        <p><strong>State:</strong> {{ record.location.state }}</p>
+<div class="card">
+    <div class="card-body p-4 p-lg-5">
+        <div class="detail-grid mb-4" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+            <div class="detail-item">
+                <div class="detail-label">Date</div>
+                <div class="detail-value">{{ record.date }}</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">City</div>
+                <div class="detail-value">{{ record.location.city }}</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">State</div>
+                <div class="detail-value">{{ record.location.state }}</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">Source</div>
+                <div class="detail-value">{{ record.get_source_display }}</div>
+            </div>
+        </div>
 
-        <hr>
-
-        <p><strong>O3 AQI:</strong> {{ record.o3_aqi|default:"-" }}</p>
-        <p><strong>CO AQI:</strong> {{ record.co_aqi|default:"-" }}</p>
-        <p><strong>SO2 AQI:</strong> {{ record.so2_aqi|default:"-" }}</p>
-        <p><strong>NO2 AQI:</strong> {{ record.no2_aqi|default:"-" }}</p>
-
-        <p><strong>Source:</strong> {{ record.get_source_display }}</p>
-
-        <hr>
-
-        <a href="{% url 'core:air_quality_update' record.pk %}" class="btn btn-warning">Edit</a>
-        <a href="{% url 'core:air_quality_delete' record.pk %}" class="btn btn-danger">Delete</a>
-        <a href="{% url 'core:air_quality_list' %}" class="btn btn-secondary">Back</a>
+        <div class="row g-3">
+            <div class="col-md-3 col-6">
+                <div class="detail-item h-100">
+                    <div class="detail-label">O3 AQI</div>
+                    <div class="detail-value">{{ record.o3_aqi|default:"-" }}</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="detail-item h-100">
+                    <div class="detail-label">CO AQI</div>
+                    <div class="detail-value">{{ record.co_aqi|default:"-" }}</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="detail-item h-100">
+                    <div class="detail-label">SO2 AQI</div>
+                    <div class="detail-value">{{ record.so2_aqi|default:"-" }}</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="detail-item h-100">
+                    <div class="detail-label">NO2 AQI</div>
+                    <div class="detail-value">{{ record.no2_aqi|default:"-" }}</div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

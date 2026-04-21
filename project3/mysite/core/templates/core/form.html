@@ -5,11 +5,25 @@
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-lg-7 col-md-9">
-        <h2 class="mb-4">{{ action }} Air Quality Record</h2>
-        <div class="card shadow-sm">
-            <div class="card-body">
+        <div class="card page-hero bg-dark text-white mb-4 border-0">
+            <div class="card-body p-4 p-md-5">
+                <p class="page-kicker text-white-50 mb-2">AIR QUALITY FORM</p>
+                <h1 class="h3 fw-bold mb-1">{{ action }} Air Quality Record</h1>
+                <p class="mb-0 text-white-75">Use this form to create or update a pollution reading.</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body p-4 p-lg-5">
                 <form method="post" novalidate>
                     {% csrf_token %}
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger" role="alert">
+                        {% for error in form.non_field_errors %}
+                        <div>{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
                     {% for field in form %}
                     <div class="mb-3">
                         <label for="{{ field.id_for_label }}" class="form-label fw-semibold">

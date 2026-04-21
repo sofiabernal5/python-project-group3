@@ -1,9 +1,11 @@
+import json
+
+import pandas as pd
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
 from django.contrib import messages
 from django.core.management import call_command
-from django.shortcuts import redirect
-from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.http import require_POST
 
@@ -124,3 +126,128 @@ def weather_list(request):
 def weather_detail(request, pk):
     record = get_object_or_404(WeatherRecord.objects.select_related('city'), pk=pk)
     return render(request, 'core/weather_detail.html', {'record': record})
+
+
+def analytics(request):
+    aqi_fields = ['o3_aqi', 'co_aqi', 'so2_aqi', 'no2_aqi']
+
+    records = AirQualityRecord.objects.select_related('location').values(
+        'date',
+        'location__city',
+        'location__state',
+        'o3_aqi',
+        'co_aqi',
+        'so2_aqi',
+        'no2_aqi',
+    )
+    df = pd.DataFrame(list(records))
+
+    if df.empty:
+        context = {
+            'total_records': 0,
+            'total_states': 0,
+            'top_state': 'N/A',
+            'top_pollutant': 'N/A',
+            'monthly_trend_json': json.dumps({'labels': [], 'values': []}),
+            'state_summary_json': json.dumps({'labels': [], 'values': []}),
+            'pollutant_mix_json': json.dumps({'labels': [], 'values': []}),
+            'category_mix_json': json.dumps({'labels': [], 'values': []}),
+            'aqi_summary_rows': [],
+        }
+        return render(request, 'core/analytics.html', context)
+
+    df = df.rename(columns={'location__city': 'city', 'location__state': 'state'})
+    df['date'] = pd.to_datetime(df['date'])
+    df[aqi_fields] = df[aqi_fields].apply(pd.to_numeric, errors='coerce')
+    df['max_aqi'] = df[aqi_fields].max(axis=1)
+    df['year_month'] = df['date'].dt.to_period('M').astype(str)
+
+    monthly_trend = (
+        df.groupby('year_month')['max_aqi']
+        .mean()
+        .sort_index()
+        .round(1)
+    )
+
+    state_summary = (
+        df.groupby('state')['max_aqi']
+        .mean()
+        .sort_values(ascending=False)
+        .head(10)
+        .round(1)
+    )
+
+    def dominant_pollutant(row):
+        values = {field: row[field] for field in aqi_fields if pd.notna(row[field])}
+        if not values:
+            return None
+        return max(values, key=values.get)
+
+    df['dominant_pollutant'] = df.apply(dominant_pollutant, axis=1)
+    pollutant_labels = {
+        'o3_aqi': 'O3',
+        'co_aqi': 'CO',
+        'so2_aqi': 'SO2',
+        'no2_aqi': 'NO2',
+    }
+    pollutant_mix = (
+        df['dominant_pollutant']
+        .dropna()
+        .map(pollutant_labels)
+        .value_counts()
+    )
+
+    def aqi_category(value):
+        if pd.isna(value):
+            return None
+        if value <= 50:
+            return 'Good'
+        if value <= 100:
+            return 'Moderate'
+        if value <= 150:
+            return 'Unhealthy for Sensitive Groups'
+        if value <= 200:
+            return 'Unhealthy'
+        if value <= 300:
+            return 'Very Unhealthy'
+        return 'Hazardous'
+
+    df['aqi_category'] = df['max_aqi'].apply(aqi_category)
+    category_mix = df['aqi_category'].dropna().value_counts()
+
+    summary = (
+        df[aqi_fields]
+        .agg(['count', 'mean', 'min', 'max'])
+        .round(1)
+        .T
+        .reset_index()
+        .rename(columns={'index': 'metric'})
+    )
+
+    top_pollutant_key = pollutant_mix.idxmax() if not pollutant_mix.empty else 'N/A'
+    top_state = state_summary.idxmax() if not state_summary.empty else 'N/A'
+
+    context = {
+        'total_records': len(df),
+        'total_states': df['state'].nunique(),
+        'top_state': top_state,
+        'top_pollutant': top_pollutant_key,
+        'monthly_trend_json': json.dumps({
+            'labels': monthly_trend.index.tolist(),
+            'values': monthly_trend.values.tolist(),
+        }),
+        'state_summary_json': json.dumps({
+            'labels': state_summary.index.tolist(),
+            'values': state_summary.values.tolist(),
+        }),
+        'pollutant_mix_json': json.dumps({
+            'labels': pollutant_mix.index.tolist(),
+            'values': pollutant_mix.values.tolist(),
+        }),
+        'category_mix_json': json.dumps({
+            'labels': category_mix.index.tolist(),
+            'values': category_mix.values.tolist(),
+        }),
+        'aqi_summary_rows': summary.to_dict(orient='records'),
+    }
+    return render(request, 'core/analytics.html', context)

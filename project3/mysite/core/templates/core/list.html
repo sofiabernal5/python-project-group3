@@ -3,58 +3,68 @@
 {% block title %}Records - Air Quality{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>Air Quality Records</h2>
-    <a href="{% url 'core:air_quality_create' %}" class="btn btn-success">+ Add Record</a>
+<div class="card page-hero bg-dark text-white mb-4 border-0">
+    <div class="card-body p-4 p-md-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+        <div>
+            <p class="page-kicker text-white-50 mb-2">AIR QUALITY DATA</p>
+            <h1 class="h3 fw-bold mb-1">Air Quality Records</h1>
+            <p class="mb-0 text-white-75">A structured view of the pollution dataset.</p>
+        </div>
+        <a href="{% url 'core:air_quality_create' %}" class="btn btn-light">+ Add Record</a>
+    </div>
 </div>
 
-<div class="table-responsive">
-    <table class="table table-striped table-hover align-middle">
-        <thead class="table-dark">
-            <tr>
-                <th>#</th>
-                <th>Date</th>
-                <th>City</th>
-                <th>State</th>
-                <th>O₃ AQI</th>
-                <th>CO AQI</th>
-                <th>SO₂ AQI</th>
-                <th>NO₂ AQI</th>
-                <th>Source</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for record in page_obj %}
-            <tr>
-                <td>{{ record.pk }}</td>
-                <td>{{ record.date }}</td>
-                <td>{{ record.location.city }}</td>
-                <td>{{ record.location.state }}</td>
-                <td>{{ record.o3_aqi|default:"-" }}</td>
-                <td>{{ record.co_aqi|default:"-" }}</td>
-                <td>{{ record.so2_aqi|default:"-" }}</td>
-                <td>{{ record.no2_aqi|default:"-" }}</td>
-                <td>{{ record.get_source_display }}</td>
-                <td>
-                    <a href="{% url 'core:air_quality_detail' record.pk %}" class="btn btn-sm btn-info">View</a>
-                    <a href="{% url 'core:air_quality_update' record.pk %}" class="btn btn-sm btn-warning">Edit</a>
-                    <a href="{% url 'core:air_quality_delete' record.pk %}" class="btn btn-sm btn-danger">Delete</a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="10" class="text-center text-muted py-4">
-                    No records found. <a href="{% url 'core:air_quality_create' %}">Add one now.</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<div class="card">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Date</th>
+                        <th>City</th>
+                        <th>State</th>
+                        <th>O₃ AQI</th>
+                        <th>CO AQI</th>
+                        <th>SO₂ AQI</th>
+                        <th>NO₂ AQI</th>
+                        <th>Source</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in page_obj %}
+                    <tr>
+                        <td>{{ record.pk }}</td>
+                        <td>{{ record.date }}</td>
+                        <td class="fw-semibold">{{ record.location.city }}</td>
+                        <td>{{ record.location.state }}</td>
+                        <td>{{ record.o3_aqi|default:"-" }}</td>
+                        <td>{{ record.co_aqi|default:"-" }}</td>
+                        <td>{{ record.so2_aqi|default:"-" }}</td>
+                        <td>{{ record.no2_aqi|default:"-" }}</td>
+                        <td>{{ record.get_source_display }}</td>
+                        <td>
+                            <a href="{% url 'core:air_quality_detail' record.pk %}" class="btn btn-sm btn-info">View</a>
+                            <a href="{% url 'core:air_quality_update' record.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                            <a href="{% url 'core:air_quality_delete' record.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="10" class="text-center text-muted py-4">
+                            No records found. <a href="{% url 'core:air_quality_create' %}">Add one now.</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 {% if page_obj.paginator.num_pages > 1 %}
-<nav aria-label="Records pagination">
+<nav aria-label="Records pagination" class="mt-4">
     <ul class="pagination justify-content-center">
         {% if page_obj.has_previous %}
         <li class="page-item">
