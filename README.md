@@ -55,13 +55,16 @@ python3 manage.py runserver
 ## Screenshots
 
 ### Homepage
-![Homepage](screenshots/homepage.png)
+
+<img width="3024" height="1808" alt="Screenshot 2026-04-21 at 11 32 18 PM" src="https://github.com/user-attachments/assets/8c23c6fe-998d-4223-9afa-2757f40db009" />
 
 ### List View
-![List View](screenshots/list.png)
+<img width="3024" height="1812" alt="Screenshot 2026-04-21 at 11 32 43 PM" src="https://github.com/user-attachments/assets/3a9af705-100a-4366-ba0d-eb77492613eb" />
+
 
 ### Analytics Dashboard
-![Analytics](screenshots/analytics.png)
+<img width="3024" height="1650" alt="Screenshot 2026-04-21 at 11 33 06 PM" src="https://github.com/user-attachments/assets/7d355180-d0f7-416b-987d-f73d92e50320" />
+
 
 ---
 
