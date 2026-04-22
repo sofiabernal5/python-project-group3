@@ -34,8 +34,16 @@ https://python-project-group3.onrender.com/
 - `/air-quality/<pk>/edit/` — Update an existing record
 - `/air-quality/<pk>/delete/` — Delete a record
 - `/weather/` — Paginated list of weather records
+- `/weather/<pk>/` — Detailed view for a single weather record
+- `/weather/<pk>/edit/` — Update an existing weather record
+- `/weather/<pk>/delete/` — Delete a weather record
+- `/fetch/` — Paginated city management + trigger panel (fetch page)
+- `/fetch/run/` - Staff-only view to trigger live weather data fetch
+- `/city/add` — Add new city record
+- `/city/<pk>` — Detailed view for a single city record
+- `/city/<pk>/edit/` — Update an existing city record
+- `/city/<pk>/delete/` — Delete a city record
 - `/analytics/` — Analytics dashboard with charts and summary stats
-- `/fetch/` — Staff-only view to trigger live weather data fetch
 
 ---
 
