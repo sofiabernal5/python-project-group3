@@ -11,9 +11,8 @@ A full-stack Django web application for browsing and analyzing daily air-quality
 |------|------------|
 | Sofia Bernal| sb22i |
 | Aidan Thompson | amt22m |
-| Ashley Oliv | |
-| | |
-
+| Ashley Oliveira Andrade | ARO22B |
+| Felipe Ubeid | FT23 |
 ---
 
 ## Dataset & API
