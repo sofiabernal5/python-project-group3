@@ -44,7 +44,7 @@ cd python-project1-group3/project3/mysite
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env  # fill in your SECRET_KEY
+cp .env.example .env
 python3 manage.py migrate
 python3 manage.py seed_data
 python3 manage.py runserver
