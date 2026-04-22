@@ -1,0 +1,71 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{ action }} Record - Weather Data{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-7 col-md-9">
+        <div class="card page-hero bg-dark text-white mb-4 border-0">
+            <div class="card-body p-4 p-md-5">
+                <p class="page-kicker text-white-50 mb-2">WEATHER FORM</p>
+                <h1 class="h3 fw-bold mb-1">{{ action }} Weather Record</h1>
+                <p class="mb-0 text-white-75">Use this form to create or update a weather reading.</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body p-4 p-lg-5">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger" role="alert">
+                        {% for error in form.non_field_errors %}
+                        <div>{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    {% for field in form %}
+                    <div class="mb-3">
+                        <label for="{{ field.id_for_label }}" class="form-label fw-semibold">
+                            {{ field.label }}
+                            {% if field.field.required %}<span class="text-danger">*</span>{% endif %}
+                        </label>
+
+                        {{ field }}
+
+                        {% if field.help_text %}
+                        <div class="form-text">{{ field.help_text }}</div>
+                        {% endif %}
+
+                        {% if field.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in field.errors %}{{ error }}{% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+
+                    <div class="d-flex gap-2 mt-3">
+                        <button type="submit" class="btn btn-primary">
+                            {{ action }} Record
+                        </button>
+
+                        {% if record %}
+                        <a href="{% url 'core:weather_detail' record.pk %}" class="btn btn-secondary">
+                            Cancel
+                        </a>
+                        {% else %}
+                        <a href="{% url 'core:weather_list' %}" class="btn btn-secondary">
+                            Cancel
+                        </a>
+                        {% endif %}
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

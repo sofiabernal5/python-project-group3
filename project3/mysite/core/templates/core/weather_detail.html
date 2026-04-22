@@ -1,0 +1,80 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Weather Record #{{ record.pk }}{% endblock %}
+
+{% block content %}
+
+<div class="card page-hero bg-dark text-white mb-4 border-0">
+    <div class="card-body p-4 p-md-5 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+        <div>
+            <p class="page-kicker text-white-50 mb-2">WEATHER DETAIL</p>
+            <h1 class="h3 fw-bold mb-1">Record #{{ record.pk }}</h1>
+            <p class="mb-0 text-white-75">{{ record.city.name }} on {{ record.date }} at {{ record.time }}</p>
+        </div>
+        <a href="{% url 'core:weather_list' %}" class="btn btn-outline-light">Back to Weather Records</a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body p-4 p-lg-5">
+        <div class="detail-grid mb-4" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+            <div class="detail-item">
+                <div class="detail-label">Date</div>
+                <div class="detail-value">{{ record.date }}</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">Time</div>
+                <div class="detail-value">{{ record.time }}</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">City</div>
+                <div class="detail-value">{{ record.city.name }}</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">Source</div>
+                <div class="detail-value">{{ record.get_source_display }}</div>
+            </div>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-md-4 col-6">
+                <div class="detail-item h-100">
+                    <div class="detail-label">Temperature</div>
+                    <div class="detail-value">{{ record.temperature|default:"-" }} °C</div>
+                </div>
+            </div>
+            <div class="col-md-4 col-6">
+                <div class="detail-item h-100">
+                    <div class="detail-label">Feels Like</div>
+                    <div class="detail-value">{{ record.apparent_temperature|default:"-" }} °C</div>
+                </div>
+            </div>
+            <div class="col-md-4 col-6">
+                <div class="detail-item h-100">
+                    <div class="detail-label">Humidity</div>
+                    <div class="detail-value">{{ record.humidity|default:"-" }}%</div>
+                </div>
+            </div>
+            <div class="col-md-4 col-6">
+                <div class="detail-item h-100">
+                    <div class="detail-label">Wind Speed</div>
+                    <div class="detail-value">{{ record.windspeed|default:"-" }} km/h</div>
+                </div>
+            </div>
+            <div class="col-md-4 col-6">
+                <div class="detail-item h-100">
+                    <div class="detail-label">Precipitation</div>
+                    <div class="detail-value">{{ record.precipitation|default:"-" }} mm</div>
+                </div>
+            </div>
+            <div class="col-md-4 col-6">
+                <div class="detail-item h-100">
+                    <div class="detail-label">Cloud Cover</div>
+                    <div class="detail-value">{{ record.cloudcover|default:"-" }}%</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

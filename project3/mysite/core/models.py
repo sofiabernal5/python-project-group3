@@ -42,7 +42,7 @@ class DataRun(models.Model):
 
     def __str__(self):
         return (
-            f"{self.get_source_display()} — "
+            f"{self.get_source_display()} - "
             f"{self.started_at.strftime('%Y-%m-%d %H:%M')} "
             f"({self.records_created} created, {self.records_updated} updated)"
         )
@@ -88,7 +88,7 @@ class AirQualityRecord(models.Model):
         verbose_name_plural = "Air Quality Records"
 
     def __str__(self):
-        return f"{self.location.city} — {self.date}"
+        return f"{self.location.city} - {self.date}"
 
     @property
     def max_aqi(self):
@@ -100,3 +100,45 @@ class AirQualityRecord(models.Model):
         candidates = {"O3": self.o3_aqi, "CO": self.co_aqi, "SO2": self.so2_aqi, "NO2": self.no2_aqi}
         valid = {k: v for k, v in candidates.items() if v is not None}
         return max(valid, key=valid.get) if valid else "N/A"
+
+class City(models.Model):
+    name = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+
+    class Meta:
+        unique_together = ("name", "latitude", "longitude")
+        verbose_name = "City"
+        verbose_name_plural = "Cities"
+
+    def __str__(self):
+        return f"{self.name}, {self.state}"
+    
+class WeatherRecord(models.Model):
+    SOURCE_CHOICES = [
+        ("csv", "CSV Import"),
+        ("api", "API Fetch"),
+    ]
+
+    city = models.ForeignKey(City, on_delete=models.CASCADE, related_name="weather_records")
+    date = models.DateField()
+    time = models.TimeField()
+
+    temperature = models.FloatField(null=True, blank=True)
+    apparent_temperature = models.FloatField(null=True, blank=True)
+    humidity = models.FloatField(null=True, blank=True)
+    windspeed = models.FloatField(null=True, blank=True)
+    precipitation = models.FloatField(null=True, blank=True)
+    cloudcover = models.FloatField(null=True, blank=True)
+
+    source = models.CharField(max_length=10, choices=SOURCE_CHOICES, default="api")
+
+    class Meta:
+        ordering = ["-date"]
+        unique_together = ("city", "date", "time")
+        verbose_name = "Weather Record"
+        verbose_name_plural = "Weather Records"
+
+    def __str__(self):
+        return f"{self.city.name} - {self.date} {self.time}"

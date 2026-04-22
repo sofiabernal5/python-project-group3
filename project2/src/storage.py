@@ -45,7 +45,7 @@ def save_sqlite(df: pd.DataFrame) -> None:
 def save_all(records: list[dict]) -> None:
     """Save all records to both CSV and SQLite. If no records are provided, log a warning and do nothing."""
     if not records:
-        logger.warning("save_all called with no records — nothing to save.")
+        logger.warning("save_all called with no records - nothing to save.")
         print("  No records to save.")
         return
 

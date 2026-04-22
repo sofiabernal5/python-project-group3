@@ -1,13 +1,18 @@
-from django.contrib import admin
-from .models import Location, DataRun, AirQualityRecord
+from django.contrib import admin, messages
+from django.core.management import call_command
+from django.utils.html import format_html
+from django.urls import path
+from django.shortcuts import redirect
+from .models import Location, DataRun, AirQualityRecord, WeatherRecord, City
 
 
 @admin.register(Location)
 class LocationAdmin(admin.ModelAdmin):
     list_display  = ("city", "county", "state", "address")
     list_filter   = ("state", "county")
-    search_fields = ("city", "county", "state", "address")
+    search_fields = ("city", "state", "address")
     ordering      = ("state", "city")
+    fields = ("address", "city", "county", "state")
 
 
 @admin.register(DataRun)
@@ -48,3 +53,44 @@ class AirQualityRecordAdmin(admin.ModelAdmin):
             "classes": ("collapse",),
         }),
     )
+
+@admin.register(City)
+class CityAdmin(admin.ModelAdmin):
+    list_display = ("name", "latitude", "longitude")
+    search_fields = ("name",)
+    
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path("fetch-weather/", self.admin_site.admin_view(self.fetch_weather))
+        ]
+        return custom_urls + urls
+
+    def fetch_weather(self, request):
+        call_command("fetch_data")
+        self.message_user(request, "Weather data fetched successfully.")
+        return redirect("..")
+    
+@admin.register(WeatherRecord)
+class WeatherRecordAdmin(admin.ModelAdmin):
+    list_display = (
+        "city",
+        "date",
+        "time",
+        "temperature",
+        "apparent_temperature",
+        "humidity",
+        "windspeed",
+        "precipitation",
+        "cloudcover",
+        "source",
+    )
+
+    list_filter = ("city", "date", "time")
+    search_fields = ("city__name",)
+
+    @admin.display(description="City")
+    def city_name(self, obj):
+        return obj.city.name
+    
+    

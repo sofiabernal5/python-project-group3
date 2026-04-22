@@ -14,7 +14,7 @@ LOG_DIR.mkdir(exist_ok=True)
 # Configure logging to write to both a file and the console, with a specific format
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s  %(levelname)-8s  %(name)s — %(message)s",
+    format="%(asctime)s  %(levelname)-8s  %(name)s - %(message)s",
     handlers=[
         logging.FileHandler(LOG_DIR / "pipeline.log"),
         logging.StreamHandler(sys.stdout),

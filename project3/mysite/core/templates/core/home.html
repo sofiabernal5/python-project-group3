@@ -1,87 +1,138 @@
 {% extends 'core/base.html' %}
 {% load static %}
 
-{% block title %}Home — Air Quality Dashboard{% endblock %}
+{% block title %}Home - Air Quality Dashboard{% endblock %}
 
 {% block content %}
 
-{# ── Hero card ─────────────────────────────────────────────────────────── #}
-<div class="card shadow-sm mb-4">
-    <div class="card-body py-5 text-center">
-        <h1 class="display-5 fw-bold mb-2">🌫️ U.S. Air Quality Explorer</h1>
-        <p class="lead text-muted mb-4">
-            Browse, analyse, and manage daily air-quality index records collected
-            from monitoring stations across the United States.
-        </p>
-        <a href="{% url 'core:record_list' %}"   class="btn btn-primary   me-2">View Records</a>
-        <a href="{% url 'core:record_create' %}"  class="btn btn-success   me-2">Add Record</a>
-        
+<div class="card page-hero bg-dark text-white mb-4 border-0">
+    <div class="card-body p-4 p-md-5">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-8">
+                <p class="page-kicker text-white-50 mb-2">U.S. AIR QUALITY & WEATHER EXPLORER</p>
+                <h1 class="display-5 fw-bold mb-3">A cleaner dashboard for air quality and weather data.</h1>
+                <p class="lead mb-0 text-white-75">
+                    Browse, analyse, and manage daily air-quality index and weather records collected from monitoring stations across the U.S.
+                </p>
+            </div>
+            <div class="col-lg-4">
+                <div class="hero-actions">
+                    <a href="{% url 'core:air_quality_list' %}" class="btn btn-light">View Air Quality</a>
+                    <a href="{% url 'core:air_quality_create' %}" class="btn btn-outline-light">Add Record</a>
+                    <a href="{% url 'core:weather_list' %}" class="btn btn-outline-light">View Weather</a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
-{# ── Stats row ─────────────────────────────────────────────────────────── #}
 <div class="row g-3 mb-4">
-    <div class="col-md-6">
-        <div class="card text-center shadow-sm h-100">
-            <div class="card-body">
-                <h2 class="display-6 fw-bold text-primary">{{ total_records }}</h2>
+    <div class="col-md-4">
+        <div class="card stat-card h-100">
+            <div class="card-body text-center py-4">
+                <h2 class="stat-value display-6 fw-bold text-primary mb-2">{{ total_records }}</h2>
                 <p class="text-muted mb-0">Total Records</p>
             </div>
         </div>
     </div>
-    <div class="col-md-6">
-        <div class="card text-center shadow-sm h-100">
-            <div class="card-body">
-                <h2 class="display-6 fw-bold text-success">{{ total_locations }}</h2>
+    <div class="col-md-4">
+        <div class="card stat-card h-100">
+            <div class="card-body text-center py-4">
+                <h2 class="stat-value display-6 fw-bold text-success mb-2">{{ total_locations }}</h2>
                 <p class="text-muted mb-0">Monitoring Stations</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card stat-card h-100">
+            <div class="card-body text-center py-4">
+                <h2 class="stat-value display-6 fw-bold text-warning mb-2">{{ total_cities }}</h2>
+                <p class="text-muted mb-0">Cities (Weather)</p>
             </div>
         </div>
     </div>
 </div>
 
-{# ── Recent records ────────────────────────────────────────────────────── #}
-<div class="card shadow-sm">
-    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Recent Records</h5>
-        <a href="{% url 'core:record_list' %}" class="btn btn-sm btn-outline-light">See all</a>
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Recent Air Quality Records</h5>
+                <a href="{% url 'core:air_quality_list' %}" class="btn btn-sm btn-outline-primary">See all</a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover mb-0 align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Date</th>
+                                <th>City</th>
+                                <th>State</th>
+                                <th>O3 AQI</th>
+                                <th>CO AQI</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for record in recent_air_quality %}
+                            <tr>
+                                <td>{{ record.date }}</td>
+                                <td class="fw-semibold">{{ record.location.city }}</td>
+                                <td>{{ record.location.state }}</td>
+                                <td>{{ record.o3_aqi|default:"-" }}</td>
+                                <td>{{ record.co_aqi|default:"-" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-4">
+                                    No records yet. <a href="{% url 'core:air_quality_create' %}">Add one.</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="card-body p-0">
-        <table class="table table-striped table-hover mb-0">
-            <thead class="table-secondary">
-                <tr>
-                    <th>Date</th>
-                    <th>City</th>
-                    <th>State</th>
-                    <th>O3 AQI</th>
-                    <th>CO AQI</th>
-                    <th>SO2 AQI</th>
-                    <th>NO2 AQI</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for record in recent %}
-                <tr>
-                    <td>{{ record.date }}</td>
-                    <td>{{ record.location.city }}</td>
-                    <td>{{ record.location.state }}</td>
-                    <td>{{ record.o3_aqi|default:"—" }}</td>
-                    <td>{{ record.co_aqi|default:"—" }}</td>
-                    <td>{{ record.so2_aqi|default:"—" }}</td>
-                    <td>{{ record.no2_aqi|default:"—" }}</td>
-                    <td>
-                        <a href="{% url 'core:record_detail' record.pk %}" class="btn btn-sm btn-info">View</a>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="8" class="text-center text-muted py-3">
-                        No records yet. <a href="{% url 'core:record_create' %}">Add one!</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Recent Weather Records</h5>
+                <a href="{% url 'core:weather_list' %}" class="btn btn-sm btn-outline-primary">See all</a>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover mb-0 align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Date</th>
+                                <th>City</th>
+                                <th>Temp</th>
+                                <th>Humidity</th>
+                                <th>Wind</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for record in recent_weather %}
+                            <tr>
+                                <td>{{ record.date }}</td>
+                                <td class="fw-semibold">{{ record.city.name }}</td>
+                                <td>{{ record.temperature|default:"-" }} °C</td>
+                                <td>{{ record.humidity|default:"-" }}%</td>
+                                <td>{{ record.windspeed|default:"-" }} km/h</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-4">
+                                    No weather records yet.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
