@@ -10,7 +10,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.http import require_POST
 
 from .models import AirQualityRecord, Location, City, WeatherRecord
-from .forms import AirQualityRecordForm
+from .forms import AirQualityRecordForm, WeatherRecordForm
 
 
 # ── Home ────────────────────────────────────────────────────────────────────
@@ -126,6 +126,39 @@ def weather_list(request):
 def weather_detail(request, pk):
     record = get_object_or_404(WeatherRecord.objects.select_related('city'), pk=pk)
     return render(request, 'core/weather_detail.html', {'record': record})
+
+# ── Weather Update ───────────────────────────────────────────────────────
+
+def weather_update(request, pk):
+    record = get_object_or_404(WeatherRecord, pk=pk)
+
+    if request.method == 'POST':
+        form = WeatherRecordForm(request.POST, instance=record)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Weather record updated successfully.')
+            return redirect('core:weather_detail', pk=record.pk)
+    else:
+        form = WeatherRecordForm(instance=record)
+
+    return render(request, 'core/weather_form.html', {
+        'form': form,
+        'action': 'Update',
+        'record': record,
+    })
+
+
+# ── Air Quality Delete ──────────────────────────────────────────────────────────────────
+
+def weather_delete(request, pk):
+    record = get_object_or_404(WeatherRecord, pk=pk)
+
+    if request.method == 'POST':
+        record.delete()
+        messages.success(request, 'Record deleted.')
+        return redirect('core:weather_list')
+
+    return render(request, 'core/confirm_weather_delete.html', {'record': record})
 
 
 def analytics(request):

@@ -1,0 +1,43 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Delete Record #{{ record.pk }} - Weather{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm overflow-hidden">
+            <div class="card-header bg-danger text-white py-3">
+                <h1 class="h5 mb-0">Confirm Deletion</h1>
+            </div>
+
+            <div class="card-body p-4 p-lg-5">
+                <p class="mb-3">You are about to permanently delete the weather record for:</p>
+
+                <ul class="mb-4">
+                    <li><strong>City:</strong> {{ record.city.name }}</li>
+                    <li><strong>Date:</strong> {{ record.date }}</li>
+                    <li><strong>Time:</strong> {{ record.time }}</li>
+                    <li><strong>Temperature:</strong> {{ record.temperature|default:"-" }}°C</li>
+                </ul>
+
+                <div class="alert alert-danger border-0 mb-4">
+                    This action cannot be undone.
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-danger">
+                            Yes, Delete
+                        </button>
+                        <a href="{% url 'core:weather_detail' record.pk %}" class="btn btn-secondary">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

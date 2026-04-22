@@ -28,9 +28,30 @@ class AirQualityRecordForm(forms.ModelForm):
 class WeatherRecordForm(forms.ModelForm):
     class Meta:
         model = WeatherRecord
-        fields = "__all__"
-        labels = {
-            "apparent_temperature_c": "Apparent Temperature (°C)",
-            "humidity_pct": "Humidity (%)",
-            "windspeed_kmh": "Wind Speed (km/h)",
+        fields = [
+            'city',
+            'date',
+            'time',
+            'temperature',
+            'apparent_temperature',
+            'humidity',
+            'windspeed',
+            'precipitation',
+            'cloudcover',
+            'source',
+        ]
+        widgets = {
+            'date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'time': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        for field_name, field in self.fields.items():
+            widget = field.widget
+
+            if isinstance(widget, forms.Select):
+                widget.attrs.setdefault('class', 'form-select')
+            elif not isinstance(widget, forms.CheckboxInput):
+                widget.attrs.setdefault('class', 'form-control')
