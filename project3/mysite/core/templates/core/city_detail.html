@@ -1,0 +1,45 @@
+{% extends 'core/base.html' %}
+
+{% block title %}City #{{ record.pk }}{% endblock %}
+
+{% block content %}
+
+<div class="card page-hero bg-dark text-white mb-4 border-0">
+    <div class="card-body p-4 p-md-5 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+        <div>
+            <p class="page-kicker text-white-50 mb-2">CITY DETAIL</p>
+            <h1 class="h3 fw-bold mb-1">{{ record.name }}</h1>
+            <p class="mb-0 text-white-75">
+                {{ record.state }} • {{ record.latitude }}, {{ record.longitude }}
+            </p>
+        </div>
+        <a href="{% url 'core:fetch_page' %}" class="btn btn-outline-light">
+            Back
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body p-4 p-lg-5">
+        <div class="detail-grid mb-4" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+            <div class="detail-item">
+                <div class="detail-label">City Name</div>
+                <div class="detail-value">{{ record.name }}</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">State</div>
+                <div class="detail-value">{{ record.state }}</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">Latitude</div>
+                <div class="detail-value">{{ record.latitude }}</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label">Longitude</div>
+                <div class="detail-value">{{ record.longitude }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

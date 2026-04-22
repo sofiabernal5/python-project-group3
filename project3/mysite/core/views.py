@@ -10,7 +10,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.http import require_POST
 
 from .models import AirQualityRecord, Location, City, WeatherRecord
-from .forms import AirQualityRecordForm, WeatherRecordForm
+from .forms import AirQualityRecordForm, WeatherRecordForm, CityForm
 
 
 # ── Home ────────────────────────────────────────────────────────────────────
@@ -21,7 +21,7 @@ def home(request):
     total_cities = City.objects.count()
     
     recent_air_quality = AirQualityRecord.objects.select_related('location').order_by('-date')[:5]
-    recent_weather = WeatherRecord.objects.select_related('city').order_by('-date', '-time')[:5]
+    recent_weather = WeatherRecord.objects.select_related('city').order_by('-date', '-time')[:7]
 
     context = {
         'total_records':   total_records,
@@ -148,7 +148,7 @@ def weather_update(request, pk):
     })
 
 
-# ── Air Quality Delete ──────────────────────────────────────────────────────────────────
+# ── Weather Delete ──────────────────────────────────────────────────────────────────
 
 def weather_delete(request, pk):
     record = get_object_or_404(WeatherRecord, pk=pk)
@@ -160,6 +160,69 @@ def weather_delete(request, pk):
 
     return render(request, 'core/confirm_weather_delete.html', {'record': record})
 
+def fetch_page(request):
+    cities = City.objects.all()
+    paginator = Paginator(cities, 10)                          # 10 per page
+    page_num = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_num)
+
+    return render(request, 'core/fetch_page.html', {'page_obj': page_obj})
+
+# ── City Create ───────────────────────────────────────────────────────
+
+def city_create(request):
+    if request.method == 'POST':
+        form = CityForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "City added successfully.")
+            return redirect('core:fetch_page')
+    else:
+        form = CityForm()
+
+    return render(request, 'core/city_form.html', {
+        'form': form,
+        'action': 'Add'
+    })
+    
+# ── City Update ───────────────────────────────────────────────────────
+
+def city_update(request, pk):
+    city = get_object_or_404(City, pk=pk)
+
+    if request.method == 'POST':
+        form = CityForm(request.POST, instance=city)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'City updated successfully.')
+            return redirect('core:fetch_page')
+    else:
+        form = CityForm(instance=city)
+
+    return render(request, 'core/city_form.html', {
+        'form': form,
+        'action': 'Update',
+        'record': city,
+    })
+
+
+# ── City Delete ───────────────────────────────────────────────────────
+
+def city_delete(request, pk):
+    city = get_object_or_404(City, pk=pk)
+
+    if request.method == 'POST':
+        city.delete()
+        messages.success(request, 'City deleted successfully.')
+        return redirect('core:fetch_page')
+
+    return render(request, 'core/confirm_city_delete.html', {'record': city})
+
+# ── City Detail ───────────────────────────────────────────────────────
+
+def city_detail(request, pk):
+    city = get_object_or_404(City, pk=pk)
+    return render(request, 'core/city_detail.html', {'record': city})
 
 def analytics(request):
     aqi_fields = ['o3_aqi', 'co_aqi', 'so2_aqi', 'no2_aqi']

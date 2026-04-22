@@ -48,7 +48,7 @@
                         <td>{{ record.precipitation|default:"-" }}</td>
                         <td>{{ record.cloudcover|default:"-" }}%</td>
                         <td>{{ record.get_source_display }}</td>
-                        <td class="text-center align-middle">
+                        <td>
                             <a href="{% url 'core:weather_detail' record.pk %}" class="btn btn-sm btn-info">View</a>
                             <a href="{% url 'core:weather_update' record.pk %}" class="btn btn-sm btn-warning">Edit</a>
                             <a href="{% url 'core:weather_delete' record.pk %}" class="btn btn-sm btn-danger">Delete</a>

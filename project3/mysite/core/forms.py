@@ -1,5 +1,5 @@
 from django import forms
-from .models import AirQualityRecord, WeatherRecord
+from .models import AirQualityRecord, WeatherRecord, City
 
 
 class AirQualityRecordForm(forms.ModelForm):
@@ -44,6 +44,22 @@ class WeatherRecordForm(forms.ModelForm):
             'date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'time': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        for field_name, field in self.fields.items():
+            widget = field.widget
+
+            if isinstance(widget, forms.Select):
+                widget.attrs.setdefault('class', 'form-select')
+            elif not isinstance(widget, forms.CheckboxInput):
+                widget.attrs.setdefault('class', 'form-control')
+
+class CityForm(forms.ModelForm):
+    class Meta:
+        model = City
+        fields = ['name', 'state', 'latitude', 'longitude']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
