@@ -16,10 +16,17 @@ urlpatterns = [
     path('weather/<int:pk>/delete/', views.weather_delete, name='weather_delete'),
     path('city/fetch/', views.fetch_page, name='fetch_page'),
     path('fetch/', views.fetch_weather_data, name='fetch_weather'),
+<<<<<<< HEAD
     path('city/add/', views.city_create, name='city_create'),
     path('city/<int:pk>/', views.city_detail, name='city_detail'),
     path('city/<int:pk>/edit/', views.city_update, name='city_update'),
     path('city/<int:pk>/delete/', views.city_delete, name='city_delete'),
+=======
+    path('cities/add/', views.city_create, name='city_create'),
+    path('cities/<int:pk>/', views.city_detail, name='city_detail'),
+    path('cities/<int:pk>/edit/', views.city_update, name='city_update'),
+    path('cities/<int:pk>/delete/', views.city_delete, name='city_delete'),
+>>>>>>> 2.5-updates
     path('analytics/', views.analytics, name='analytics'),
     
     # Section 2.4 - analytics URL's go below
